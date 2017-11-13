@@ -1,4 +1,4 @@
 pyTelegramBotAPI==3.0.0
 flask
 pymongo
-apscheduler
+apscheduler==2.1.2
