@@ -43,7 +43,7 @@ def start(msg):
 
 
 @bot.message_handler(
-    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("add").decode('utf-8'))
+    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("add"))
 def add_task(msg):
     global isWrite
     isWrite = True
@@ -52,7 +52,7 @@ def add_task(msg):
 
 
 @bot.message_handler(
-    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("mytask").decode('utf-8'))
+    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("mytask"))
 def my_task(msg):
     lc = msg.from_user.language_code
     find = db.users.find_one({"id": str(msg.chat.id)})
@@ -62,14 +62,14 @@ def my_task(msg):
         isWrite = False
         task_kb.row(messages.get(get_lang(lc)).get("back"))
         for i in find["tasks"]:
-            task_kb.row(i.encode('utf-8'))
+            task_kb.row(i)
         bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("utask"), reply_markup=task_kb)
     else:
         bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("notask"))
 
 
 @bot.message_handler(
-    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("back").decode('utf-8'))
+    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("back"))
 def back(msg):
     global isWrite
     isWrite = False
@@ -81,7 +81,7 @@ def back(msg):
 
 @bot.message_handler(commands=['rate'])
 @bot.message_handler(
-    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("rate").decode('utf-8'))
+    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("rate"))
 def rate(msg):
     lc = msg.from_user.language_code
     kb = types.InlineKeyboardMarkup()
@@ -93,7 +93,7 @@ def rate(msg):
 
 @bot.message_handler(commands=["help"])
 @bot.message_handler(
-    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("help").decode('utf-8'))
+    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("help"))
 def help(msg):
     lc = msg.from_user.language_code
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("ref"))
@@ -136,7 +136,7 @@ atexit.register(lambda: cron.shutdown(wait=False))
 @server.route("/bot", methods=["POST"])
 def getMessage():
     bot.process_new_updates(
-        [telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+        [telebot.types.Update.de_json(request.stream.read())])
     return "ok", 200
 
 
