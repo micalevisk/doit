@@ -1,5 +1,6 @@
 from telebot import types
 
+
 def get_lang(lang_code):
     if not lang_code:
         return "en"
@@ -11,8 +12,8 @@ def get_lang(lang_code):
         return "en"
 
 
-def gen_markup(add_task, my_task, my_help):
+def gen_markup(add_task, my_task, my_help, rate):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row(add_task, my_task)
-    markup.row(my_help)
+    markup.row(my_help, rate)
     return markup
