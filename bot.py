@@ -2,7 +2,6 @@
 import atexit
 
 import config
-import schedule
 import telebot
 
 from flask import Flask, request
