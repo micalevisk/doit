@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 import atexit
 
 import config
@@ -12,6 +13,9 @@ from apscheduler.scheduler import Scheduler
 
 from helper import get_lang, gen_markup
 from mymsg import messages
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 server = Flask(__name__)
 
