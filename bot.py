@@ -4,13 +4,14 @@ import atexit
 
 import config
 import telebot
+import botan
 
 from flask import Flask, request
 from pymongo import MongoClient
 from telebot import types
 from apscheduler.scheduler import Scheduler
 
-from helper import get_lang, gen_markup
+from helper import get_lang, gen_markup, tasks_kb
 from mymsg import messages
 
 server = Flask(__name__)
@@ -19,6 +20,7 @@ cron = Scheduler(daemon=True)
 cron.start()
 
 bot = telebot.TeleBot(config.token)
+botan_key = config.botan_key
 client = MongoClient(config.base)
 db = client["todo"]
 
@@ -36,10 +38,14 @@ def start(msg):
     if find:
         bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("welcome"),
                          reply_markup=markup)
+        botan.track(botan_key, msg.chat.id, msg, 'Returned user')
+        return
     else:
         db.users.save({"id": str(msg.chat.id), "tasks": [], "lang": lc})
         bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("newuser"),
                          reply_markup=markup)
+        botan.track(botan_key, msg.chat.id, msg, 'New user')
+        return
 
 
 @bot.message_handler(
@@ -54,18 +60,18 @@ def add_task(msg):
 @bot.message_handler(
     func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("mytask"))
 def my_task(msg):
+    global isWrite
+    isWrite = False
+
     lc = msg.from_user.language_code
     find = db.users.find_one({"id": str(msg.chat.id)})
-    task_kb = types.ReplyKeyboardMarkup(resize_keyboard=True)
     find["tasks"].reverse()
     if len(find["tasks"]) != 0:
-        isWrite = False
-        task_kb.row(messages.get(get_lang(lc)).get("back"))
-        for i in find["tasks"]:
-            task_kb.row(i)
-        bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("utask"), reply_markup=task_kb)
+        bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("utask"), reply_markup=tasks_kb(find["tasks"]))
     else:
         bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("notask"))
+    botan.track(botan_key, msg.chat.id, msg, 'Task list')
+    return
 
 
 @bot.message_handler(
@@ -89,6 +95,8 @@ def rate(msg):
         text=messages.get(get_lang(lc)).get("rate"), url="https://telegram.me/storebot?start=todobobot")
     kb.add(btn)
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("textrate"), reply_markup=kb)
+    botan.track(botan_key, msg.chat.id, msg, 'Rate')
+    return
 
 
 @bot.message_handler(commands=["help"])
@@ -97,6 +105,8 @@ def rate(msg):
 def help(msg):
     lc = msg.from_user.language_code
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("ref"))
+    botan.track(botan_key, msg.chat.id, msg, 'Help')
+    return
 
 
 @bot.message_handler(func=lambda msg: True)
@@ -107,20 +117,35 @@ def msg_hand(msg):
                         messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"))
     if isWrite:
         find = db.users.find_one({"id": str(msg.chat.id)})
-        if msg.text not in find["tasks"]:
-            isWrite = False
-            db.users.update({"id": str(msg.chat.id)}, {"$push": {"tasks": msg.text}}, upsert=False)
-            bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("uadd"), reply_markup=markup)
+        if len(msg.text) < 50:
+            if msg.text not in find["tasks"]:
+                isWrite = False
+                db.users.update({"id": str(msg.chat.id)}, {"$push": {"tasks": msg.text}}, upsert=False)
+                bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("uadd"), reply_markup=markup)
+                botan.track(botan_key, msg.chat.id, msg, 'Add task')
+                return
+            else:
+                isWrite = False
+                bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("ftask"), reply_markup=markup)
         else:
             isWrite = False
-            bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("ftask"), reply_markup=markup)
-    else:
-        find = db.users.find_one({"id": str(msg.chat.id), "tasks": msg.text})
-        if find:
-            db.users.update({"id": str(msg.chat.id)}, {"$pull": {"tasks": msg.text}}, upsert=False)
-            bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("del"), reply_markup=markup)
+            bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("maxlen"), reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+    if call.message:
+        db.users.update({"id": str(msg.chat.id)}, {"$pull": {"tasks": msg.text}}, upsert=False)
+        lc = msg.from_user.language_code
+        find = db.users.find_one({"id": str(msg.chat.id)})
+        find["tasks"].reverse()
+        if len(find["tasks"]) != 0:
+            bot.answer_callback_query(call.id, text=messages.get(get_lang(lc)).get("del"))
+            bot.edit_message_text(chat_id=call.msg.chat.id, message_id=call.msg.message_id, text=messages.get(get_lang(lc)).get("utask"), reply_markup=tasks_kb(find["tasks"]))
+            botan.track(botan_key, msg.chat.id, msg, 'Delete task')
+            return
         else:
-            bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("nf"), reply_markup=markup)
+            bot.edit_message_text(chat_id=call.msg.chat.id, message_id=call.msg.message_id, text=messages.get(get_lang(lc)).get("notask"))
 
 
 @cron.interval_schedule(hours=12)
