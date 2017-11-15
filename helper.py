@@ -17,3 +17,11 @@ def gen_markup(add_task, my_task, my_help, rate):
     markup.row(add_task, my_task)
     markup.row(my_help, rate)
     return markup
+
+
+def tasks_kb(tasks):
+    keyboard = types.InlineKeyboardMarkup()
+    for i in tasks:
+        button = types.InlineKeyboardButton(text=i, callback_data=i)
+        keyboard.add(button)
+    return keyboard
