@@ -4,13 +4,14 @@ messages = {
         "newuser": "Добро пожаловать!\nНажмите кнопку 'Добавить задание ✏️', чтобы создать новую задачу 📋",
         "welcome": "С возвращением 🎉",
 
-        "add": "Добавить задание ✏️",
+        "add": "Добавить задание✏️",
         "wtask": "Введите ваше задание:",
         "uadd": "Ваше задание было добавлено ✅",
 
-        "mytask": "Мои задания 📝",
+        "mytask": "Мои задания📝",
         "utask": "Нажмите на задание, чтобы его завершить 🌝",
         "ftask": "Это задание уже есть в списке❗️",
+        "maxlen": "Задание слишком длинное❗️",
 
         "del": "Задание было завершено ❌",
         "nf": "Задание не найдено❗️",
@@ -18,11 +19,11 @@ messages = {
         "back": "← назад",
         "menu": "Выберите пункт в меню 🌚",
 
-        "rate": "Оценить ⭐️",
+        "rate": "Оценить⭐️",
         "textrate": "Спасибо за использование ToDo🚀\nПожалуйста оцените его в StoreBot",
 
-        "help": "Помощь 📚",
-        "ref": "По всем вопросам пишите @enotcode",
+        "help": "Помощь📚",
+        "ref": "Если у вас есть вопросы или предложения, пишите @enotcode",
 
         "notify": "У вас есть невыполненные задачи 😥"
     },
@@ -30,13 +31,14 @@ messages = {
         "newuser": "Welcome!\nPress button 'Add task ✏️', to create new task 📋",
         "welcome": "Welcome back 🎉",
 
-        "add": "Add task ✏️",
+        "add": "Add task✏️",
         "wtask": "Enter your task:",
         "uadd": "Your task was added ✅",
 
-        "mytask": "My tasks 📝",
+        "mytask": "My tasks📝",
         "utask": "Press the task in the list in order to finish it 🌝",
         "ftask": "This task is already in the list❗️",
+        "maxlen": "The task is too long❗️",
 
         "del": "The task was completed ❌",
         "nf": "Task not found❗️",
@@ -44,11 +46,11 @@ messages = {
         "back": "← back",
         "menu": "Select menu 🌚",
 
-        "rate": "Rate ⭐️",
+        "rate": "Rate⭐️",
         "textrate": "Thanks for using ToDo 🚀\nPlease rate it in the StoreBot",
 
-        "help": "Help 📚",
-        "ref": "On all questions write @enotcode",
+        "help": "Help📚",
+        "ref": "If you have any questions or suggestions, please contact me @enotcode",
 
         "notify": "You have a outstanding tasks 😥"
     }
