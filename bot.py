@@ -135,7 +135,7 @@ def msg_hand(msg):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
     if call.message:
-        lc = msg.from_user.language_code
+        lc = call.message.from_user.language_code
         find = db.users.find_one({"id": str(call.message.chat.id)})
         db.users.update({"id": str(call.message.chat.id)}, {"$pull": {"tasks": find["tasks"][int(call.data)]}}, upsert=False)
         bot.answer_callback_query(call.id, text=messages.get(get_lang(lc)).get("del"))
@@ -144,11 +144,11 @@ def callback_inline(call):
         find["tasks"].reverse()
 
         if len(find["tasks"]) != 0:
-            bot.edit_message_text(chat_id=call.msg.chat.id, message_id=call.msg.message_id, text=messages.get(get_lang(lc)).get("utask"), reply_markup=tasks_kb(find["tasks"]))
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=messages.get(get_lang(lc)).get("utask"), reply_markup=tasks_kb(find["tasks"]))
             botan.track(botan_key, msg.chat.id, msg, 'Delete task')
             return
         else:
-            bot.edit_message_text(chat_id=call.msg.chat.id, message_id=call.msg.message_id, text=messages.get(get_lang(lc)).get("notask"))
+            bot.edit_message_text(chat_id=chat_id=call.message.chat.id, message_id=call.message.message_id, text=messages.get(get_lang(lc)).get("notask"))
 
 
 @cron.interval_schedule(hours=12)
