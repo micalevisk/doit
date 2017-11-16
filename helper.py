@@ -21,7 +21,8 @@ def gen_markup(add_task, my_task, my_help, rate):
 
 def tasks_kb(tasks):
     keyboard = types.InlineKeyboardMarkup()
+    tasks.reverse()
     for i in range(len(tasks)):
-        button = types.InlineKeyboardButton(text=tasks[i], callback_data="task" + str(i))
+        button = types.InlineKeyboardButton(text=tasks[i], callback_data=str(i))
         keyboard.add(button)
     return keyboard
