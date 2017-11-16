@@ -119,17 +119,15 @@ def msg_hand(msg):
         find = db.users.find_one({"id": str(msg.chat.id)})
         if len(msg.text) < 50:
             if msg.text not in find["tasks"]:
-                isWrite = False
                 db.users.update({"id": str(msg.chat.id)}, {"$push": {"tasks": msg.text}}, upsert=False)
                 bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("uadd"), reply_markup=markup)
                 botan.track(botan_key, msg.chat.id, msg, 'Add task')
                 return
             else:
-                isWrite = False
                 bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("ftask"), reply_markup=markup)
         else:
-            isWrite = False
             bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("maxlen"), reply_markup=markup)
+        isWrite = False
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -162,8 +160,8 @@ def admin(msg):
 @bot.message_handler(commands=["lang"])
 def lang(msg):
     lc = msg.from_user.language_code
-    db.users.update({"id": str(msg.chat.id)}, {"$set": {"lang": lc}}, upsert=False)
-    bot.send_message(msg.chat.id, messages.get(lc).get("lang"))
+    db.users.update({"id": str(msg.chat.id)}, {"$set": {"lang": lc}})
+    bot.send_message(msg.chat.id, messages.get(lc).get("lang") + lc)
 
 
 @cron.interval_schedule(hours=12)
