@@ -157,7 +157,7 @@ def callback_inline(call):
 @cron.interval_schedule(hours=12)
 def notify():
     for user in db.users.find():
-        if user["tasks"] == []:
+        if user["tasks"] != []:
             bot.send_message(user["id"], messages.get(get_lang(user["lang"])).get("notify"))
 
 
