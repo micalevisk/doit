@@ -13,7 +13,7 @@ messages = {
         "ftask": "Это задание уже есть в списке❗️",
         "maxlen": "Задание слишком длинное❗️",
 
-        "del": "Задание было завершено ❌",
+        "del": "Задание было завершено ✔️",
         "nf": "Задание не найдено❗️",
         "notask": "У вас нет заданий❗️",
         "back": "← назад",
@@ -25,7 +25,10 @@ messages = {
         "help": "Помощь📚",
         "ref": "Если у вас есть вопросы или предложения, пишите @enotcode",
 
-        "notify": "У вас есть невыполненные задачи 😥"
+        "lang": "Ваш язык: ",
+
+        "notify": "У вас есть невыполненные задачи 😥",
+        "update": "Вышло обновления бота! Пожалуйста перезапустите его командой /start, для корректной работы!"
     },
     "en": {
         "newuser": "Welcome!\nPress button 'Add task ✏️', to create new task 📋",
@@ -40,7 +43,7 @@ messages = {
         "ftask": "This task is already in the list❗️",
         "maxlen": "The task is too long❗️",
 
-        "del": "The task was completed ❌",
+        "del": "The task was completed ✔️",
         "nf": "Task not found❗️",
         "notask": "You have no tasks❗️",
         "back": "← back",
@@ -52,6 +55,9 @@ messages = {
         "help": "Help📚",
         "ref": "If you have any questions or suggestions, please contact me @enotcode",
 
-        "notify": "You have a outstanding tasks 😥"
+        "lang": "You language: ",
+
+        "notify": "You have a outstanding tasks 😥",
+        "update": "Came out update the bot! Please restart it with the command /start, for correct work!"
     }
 }
