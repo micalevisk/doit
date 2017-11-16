@@ -41,7 +41,7 @@ def start(msg):
         botan.track(botan_key, msg.chat.id, msg, 'Returned user')
         return
     else:
-        db.users.save({"id": str(msg.chat.id), "tasks": [], "lang": lc})
+        db.users.save({"id": str(msg.chat.id), "tasks": [], "lang": lc, "rate": "false"})
         bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("newuser"),
                          reply_markup=markup)
         botan.track(botan_key, msg.chat.id, msg, 'New user')
@@ -92,7 +92,7 @@ def rate(msg):
     lc = msg.from_user.language_code
     kb = types.InlineKeyboardMarkup()
     btn = types.InlineKeyboardButton(
-        text=messages.get(get_lang(lc)).get("rate"), url="https://telegram.me/storebot?start=todobobot")
+        text=messages.get(get_lang(lc)).get("rate"), url="https://t.me/storebot?start=ne_robot")
     kb.add(btn)
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("textrate"), reply_markup=kb)
     botan.track(botan_key, msg.chat.id, msg, 'Rate')
@@ -134,24 +134,36 @@ def msg_hand(msg):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
-    if call.message:
-        lc = call.message.from_user.language_code
-        find = db.users.find_one({"id": str(call.message.chat.id)})
-        db.users.update({"id": str(call.message.chat.id)}, {"$pull": {"tasks": find["tasks"][int(call.data)]}},
-                        upsert=False)
-        bot.answer_callback_query(call.id, text=messages.get(get_lang(lc)).get("del"))
+    lc = call.message.from_user.language_code
+    find = db.users.find_one({"id": str(call.message.chat.id)})
+    db.users.update({"id": str(call.message.chat.id)}, {"$pull": {"tasks": find["tasks"][int(call.data)]}},upsert=False)
+    bot.answer_callback_query(call.id, text=messages.get(get_lang(lc)).get("del"))
 
-        find = db.users.find_one({"id": str(call.message.chat.id)})
-        find["tasks"].reverse()
+    find = db.users.find_one({"id": str(call.message.chat.id)})
+    find["tasks"].reverse()
 
-        if len(find["tasks"]) != 0:
-            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                                  text=messages.get(get_lang(lc)).get("utask"), reply_markup=tasks_kb(find["tasks"]))
-            botan.track(botan_key, call.message.chat.id, call.message, 'Delete task')
-            return
-        else:
-            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                                  text=messages.get(get_lang(lc)).get("notask"))
+    if len(find["tasks"]) != 0:
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=messages.get(get_lang(lc)).get("utask"), reply_markup=tasks_kb(find["tasks"]))
+        botan.track(botan_key, call.message.chat.id, call.message, 'Delete task')
+        return
+    else:
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,text=messages.get(get_lang(lc)).get("notask"))
+
+
+@bot.message_handler(commands=["administration"])
+def admin(msg):
+    if msg.chat.id == config.adminID:
+        bot.send_message(msg.chat.id, "Hello! You use the administrator mode!")
+        if msg.text == "/administration update":
+            for user in db.users.find():
+                bot.send_message(user["id"], messages.get(get_lang(user["lang"])).get("update"))
+
+
+@bot.message_handler(commands=["lang"])
+def lang(msg):
+    lc = msg.from_user.language_code
+    db.users.update({"id": str(msg.chat.id)}, {"$set": {"lang": lc}}, upsert=False)
+    bot.send_message(msg.chat.id, messages.get(lc).get("lang"))
 
 
 @cron.interval_schedule(hours=12)
