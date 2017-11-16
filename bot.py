@@ -145,7 +145,7 @@ def callback_inline(call):
 
         if len(find["tasks"]) != 0:
             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=messages.get(get_lang(lc)).get("utask"), reply_markup=tasks_kb(find["tasks"]))
-            botan.track(botan_key, msg.chat.id, msg, 'Delete task')
+            botan.track(botan_key, call.message.chat.id, call.message, 'Delete task')
             return
         else:
             bot.edit_message_text(chat_id=chat_id=call.message.chat.id, message_id=call.message.message_id, text=messages.get(get_lang(lc)).get("notask"))
