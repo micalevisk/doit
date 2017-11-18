@@ -41,7 +41,7 @@ Then set the environment variable:
 * **BASE** - url of your mongo database (*for example* `mongodb://localhost:27017/`)
 * **BOTAN** - api key for statistics your telegram bot (read more here [botan.io](https://botan.io))
 * **ADMIN** - the administrator ID of the bot (you can read it from the [@JsonDumpBot](https://t.me/JsonDumpBot))
-* **URL** - url of your bot server (*for example* `mongodb://localhost:5000/`)
+* **URL** - url of your bot server (*for example* `https://localhost:5000/`)
 
 After that you can start the bot with the command
 
