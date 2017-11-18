@@ -157,13 +157,6 @@ def admin(msg):
                 bot.send_message(user["id"], messages.get(get_lang(user["lang"])).get("update"))
 
 
-@bot.message_handler(commands=["lang"])
-def lang(msg):
-    lc = msg.from_user.language_code
-    db.users.update({"id": str(msg.chat.id)}, {"$set": {"lang": lc}})
-    bot.send_message(msg.chat.id, messages.get(lc).get("lang") + lc)
-
-
 @cron.interval_schedule(hours=12)
 def notify():
     for user in db.users.find():
