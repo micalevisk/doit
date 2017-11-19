@@ -48,6 +48,18 @@ def start(msg):
         return
 
 
+@bot.message_handler(commands=["add"])
+def add(msg):
+    global isWrite
+    isWrite = True
+    lc = msg.from_user.language_code
+    m = msg.text.replace("/add", "")
+    if m == "":
+        bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("wtask"), reply_markup=kb_hider)
+    else:
+        save_task(msg)
+
+
 @bot.message_handler(
     func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("add"))
 def add_task(msg):
@@ -57,6 +69,7 @@ def add_task(msg):
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("wtask"), reply_markup=kb_hider)
 
 
+@bot.message_handler(commands=["tasks"])
 @bot.message_handler(
     func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("mytask"))
 def my_task(msg):
@@ -85,7 +98,7 @@ def back(msg):
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("menu"), reply_markup=markup)
 
 
-@bot.message_handler(commands=['rate'])
+@bot.message_handler(commands=["rate"])
 @bot.message_handler(
     func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("rate"))
 def rate(msg):
@@ -116,18 +129,7 @@ def msg_hand(msg):
     markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
                         messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"))
     if isWrite:
-        find = db.users.find_one({"id": str(msg.chat.id)})
-        if len(msg.text) < 50:
-            if msg.text not in find["tasks"]:
-                db.users.update({"id": str(msg.chat.id)}, {"$push": {"tasks": msg.text}}, upsert=False)
-                bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("uadd"), reply_markup=markup)
-                botan.track(botan_key, msg.chat.id, msg, 'Add task')
-                return
-            else:
-                bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("ftask"), reply_markup=markup)
-        else:
-            bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("maxlen"), reply_markup=markup)
-        isWrite = False
+        save_task(msg)
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -146,6 +148,22 @@ def callback_inline(call):
         return
     else:
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,text=messages.get(get_lang(lc)).get("notask"))
+
+
+def save_task(msg):
+    global isWrite
+    find = db.users.find_one({"id": str(msg.chat.id)})
+    if len(msg.text) < 50:
+        if msg.text not in find["tasks"]:
+            db.users.update({"id": str(msg.chat.id)}, {"$push": {"tasks": msg.text}}, upsert=False)
+            bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("uadd"), reply_markup=markup)
+            botan.track(botan_key, msg.chat.id, msg, 'Add task')
+            return
+        else:
+            bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("ftask"), reply_markup=markup)
+    else:
+        bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("maxlen"), reply_markup=markup)
+    isWrite = False
 
 
 @bot.message_handler(commands=["administration"])
