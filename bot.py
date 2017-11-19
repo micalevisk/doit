@@ -57,7 +57,7 @@ def add(msg):
     if m == "":
         bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("wtask"), reply_markup=kb_hider)
     else:
-        save_task(msg)
+        save_task(m, msg.chat.id)
 
 
 @bot.message_handler(
@@ -125,11 +125,8 @@ def help(msg):
 @bot.message_handler(func=lambda msg: True)
 def msg_hand(msg):
     global isWrite
-    lc = msg.from_user.language_code
-    markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
-                        messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"))
     if isWrite:
-        save_task(msg)
+        save_task(msg, msg.chat.id)
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -150,19 +147,22 @@ def callback_inline(call):
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,text=messages.get(get_lang(lc)).get("notask"))
 
 
-def save_task(msg):
+def save_task(msg, cid):
     global isWrite
-    find = db.users.find_one({"id": str(msg.chat.id)})
+    lc = msg.from_user.language_code
+    markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
+                        messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"))
+    find = db.users.find_one({"id": str(cid)})
     if len(msg.text) < 50:
         if msg.text not in find["tasks"]:
-            db.users.update({"id": str(msg.chat.id)}, {"$push": {"tasks": msg.text}}, upsert=False)
-            bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("uadd"), reply_markup=markup)
-            botan.track(botan_key, msg.chat.id, msg, 'Add task')
+            db.users.update({"id": str(cid)}, {"$push": {"tasks": msg.text}}, upsert=False)
+            bot.send_message(cid, messages.get(get_lang(lc)).get("uadd"), reply_markup=markup)
+            botan.track(botan_key, cid, msg, 'Add task')
             return
         else:
-            bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("ftask"), reply_markup=markup)
+            bot.send_message(cid, messages.get(get_lang(lc)).get("ftask"), reply_markup=markup)
     else:
-        bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("maxlen"), reply_markup=markup)
+        bot.send_message(cid, messages.get(get_lang(lc)).get("maxlen"), reply_markup=markup)
     isWrite = False
 
 
