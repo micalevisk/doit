@@ -169,14 +169,14 @@ def save_task(msg, cid, text):
     isWrite = False
 
 
-@bot.message_handler(commands=["administration"])
+@bot.message_handler(commands=["admin"])
 def admin(msg):
     if msg.chat.id == config.adminID:
         bot.send_message(msg.chat.id, "Hello! You use the administrator mode!")
-        if msg.text == "/administration update":
+        if msg.text == "/admin update":
             for user in db.users.find():
                 bot.send_message(user["id"], messages.get(get_lang(user["lang"])).get("update"))
-        elif msg.text == "/administration message":
+        elif msg.text == "/admin message":
             for user in db.users.find():
                 bot.send_message(user["id"], messages.get(get_lang(user["lang"])).get("message"))
 
