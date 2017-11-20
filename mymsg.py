@@ -28,7 +28,9 @@ messages = {
         "lang": "Ваш язык: ",
 
         "notify": "У вас есть невыполненные задачи 😥",
-        "update": "Вышло обновления бота! Пожалуйста перезапустите его командой /start, для корректной работы!"
+        "update": "Вышло обновления бота! Пожалуйста перезапустите его командой /start, для корректной работы!",
+
+        "message": "Сообщение"
     },
     "en": {
         "newuser": "Welcome!\nPress button 'Add task ✏️', to create new task 📋",
@@ -58,6 +60,8 @@ messages = {
         "lang": "You language: ",
 
         "notify": "You have a outstanding tasks 😥",
-        "update": "Came out update the bot! Please restart it with the command /start, for correct work!"
+        "update": "Came out update the bot! Please restart it with the command /start, for correct work!",
+
+        "message": "Message"
     }
 }
