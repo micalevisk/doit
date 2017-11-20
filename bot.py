@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import atexit
 import os
+import atexit
 
 import botan
 import config
@@ -8,10 +8,10 @@ import telebot
 
 from apscheduler.scheduler import Scheduler
 from flask import Flask, request
-from helper import get_lang, gen_markup, tasks_kb
 from pymongo import MongoClient
 from telebot import types
 
+from helper import get_lang, gen_markup, tasks_kb
 from mymsg import messages
 
 server = Flask(__name__)
@@ -133,18 +133,21 @@ def msg_hand(msg):
 def callback_inline(call):
     lc = call.message.from_user.language_code
     find = db.users.find_one({"id": str(call.message.chat.id)})
-    db.users.update({"id": str(call.message.chat.id)}, {"$pull": {"tasks": find["tasks"][int(call.data)]}},upsert=False)
+    db.users.update({"id": str(call.message.chat.id)}, {"$pull": {"tasks": find["tasks"][int(call.data)]}},
+                    upsert=False)
     bot.answer_callback_query(call.id, text=messages.get(get_lang(lc)).get("del"))
 
     find = db.users.find_one({"id": str(call.message.chat.id)})
     find["tasks"].reverse()
 
     if len(find["tasks"]) != 0:
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=messages.get(get_lang(lc)).get("utask"), reply_markup=tasks_kb(find["tasks"]))
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                              text=messages.get(get_lang(lc)).get("utask"), reply_markup=tasks_kb(find["tasks"]))
         botan.track(botan_key, call.message.chat.id, call.message, 'Delete task')
         return
     else:
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,text=messages.get(get_lang(lc)).get("notask"))
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                              text=messages.get(get_lang(lc)).get("notask"))
 
 
 def save_task(msg, cid, text):
@@ -173,6 +176,9 @@ def admin(msg):
         if msg.text == "/administration update":
             for user in db.users.find():
                 bot.send_message(user["id"], messages.get(get_lang(user["lang"])).get("update"))
+        elif msg.text == "/administration message":
+            for user in db.users.find():
+                bot.send_message(user["id"], messages.get(get_lang(user["lang"])).get("message"))
 
 
 @cron.interval_schedule(hours=12)
