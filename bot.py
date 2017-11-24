@@ -134,7 +134,7 @@ def notifyon(msg):
                         messages.get(get_lang(lc)).get("mytask"), messages.get(get_lang(lc)).get("help"),
                         messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyoff"))
 
-    db.users.update({"id": str(msg.chat.id)}, {"$set": {"notify": "true"}}
+    db.users.update({"id": str(msg.chat.id)}, {"$set": {"notify": "true"}})
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("non"), reply_markup=markup)
 
 
