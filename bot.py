@@ -78,7 +78,6 @@ def my_task(msg):
 
     lc = msg.from_user.language_code
     find = db.users.find_one({"id": str(msg.chat.id)})
-    find["tasks"].reverse()
     if len(find["tasks"]) != 0:
         bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("utask"), reply_markup=tasks_kb(find["tasks"]))
     else:
@@ -138,8 +137,6 @@ def callback_inline(call):
     bot.answer_callback_query(call.id, text=messages.get(get_lang(lc)).get("del"))
 
     find = db.users.find_one({"id": str(call.message.chat.id)})
-    find["tasks"].reverse()
-
     if len(find["tasks"]) != 0:
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                               text=messages.get(get_lang(lc)).get("utask"), reply_markup=tasks_kb(find["tasks"]))
