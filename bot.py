@@ -34,14 +34,14 @@ def start(msg):
     lc = msg.from_user.language_code
     markup = gen_markup(messages.get(get_lang(lc)).get("add"),
                         messages.get(get_lang(lc)).get("mytask"), messages.get(get_lang(lc)).get("help"),
-                        messages.get(get_lang(lc)).get("rate"))
+                        messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyoff"))
     if find:
         bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("welcome"),
                          reply_markup=markup)
         botan.track(botan_key, msg.chat.id, msg, 'Returned user')
         return
     else:
-        db.users.save({"id": str(msg.chat.id), "tasks": [], "lang": lc, "rate": "false"})
+        db.users.save({"id": str(msg.chat.id), "tasks": [], "lang": lc, "rate": "false", "notify": "true"})
         bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("newuser"),
                          reply_markup=markup)
         botan.track(botan_key, msg.chat.id, msg, 'New user')
@@ -93,7 +93,7 @@ def back(msg):
     isWrite = False
     lc = msg.from_user.language_code
     markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
-                        messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"))
+                        messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyoff"))
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("menu"), reply_markup=markup)
 
 
@@ -119,6 +119,30 @@ def help(msg):
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("ref"))
     botan.track(botan_key, msg.chat.id, msg, 'Help')
     return
+
+
+@bot.message_handler(
+    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("notifyoff"))
+def notifyoff(msg):
+    lc = msg.from_user.language_code
+    markup = gen_markup(messages.get(get_lang(lc)).get("add"),
+                        messages.get(get_lang(lc)).get("mytask"), messages.get(get_lang(lc)).get("help"),
+                        messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyon"))
+
+    db.users.update({"id": str(msg.chat.id)}, {"$set": {"notify": "false"}}
+    bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("noff"), reply_markup=markup)
+
+
+@bot.message_handler(
+    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("notifyon"))
+def notifyon(msg):
+    lc = msg.from_user.language_code
+    markup = gen_markup(messages.get(get_lang(lc)).get("add"),
+                        messages.get(get_lang(lc)).get("mytask"), messages.get(get_lang(lc)).get("help"),
+                        messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyoff"))
+
+    db.users.update({"id": str(msg.chat.id)}, {"$set": {"notify": "true"}}
+    bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("non"), reply_markup=markup)
 
 
 @bot.message_handler(func=lambda msg: True)
@@ -151,7 +175,7 @@ def save_task(msg, cid, text):
     global isWrite
     lc = msg.from_user.language_code
     markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
-                        messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"))
+                        messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyoff"))
     find = db.users.find_one({"id": str(cid)})
     if len(text) < 50:
         if text not in find["tasks"]:
@@ -181,7 +205,7 @@ def admin(msg):
 @cron.interval_schedule(hours=12)
 def notify():
     for user in db.users.find():
-        if user["tasks"] != []:
+        if user["tasks"] != [] and user["notify"] != "false":
             bot.send_message(user["id"], messages.get(get_lang(user["lang"])).get("notify"))
 
 
