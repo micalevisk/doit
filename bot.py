@@ -60,8 +60,7 @@ def add(msg):
         save_task(msg, msg.chat.id, m)
 
 
-@bot.message_handler(
-    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("add"))
+@bot.message_handler(func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("add"))
 def add_task(msg):
     global isWrite
     isWrite = True
@@ -70,8 +69,7 @@ def add_task(msg):
 
 
 @bot.message_handler(commands=["tasks"])
-@bot.message_handler(
-    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("mytask"))
+@bot.message_handler(func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("mytask"))
 def my_task(msg):
     global isWrite
     isWrite = False
@@ -86,8 +84,7 @@ def my_task(msg):
     return
 
 
-@bot.message_handler(
-    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("back"))
+@bot.message_handler(func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("back"))
 def back(msg):
     global isWrite
     isWrite = False
@@ -98,8 +95,7 @@ def back(msg):
 
 
 @bot.message_handler(commands=["rate"])
-@bot.message_handler(
-    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("rate"))
+@bot.message_handler(func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("rate"))
 def rate(msg):
     lc = msg.from_user.language_code
     kb = types.InlineKeyboardMarkup()
@@ -112,8 +108,7 @@ def rate(msg):
 
 
 @bot.message_handler(commands=["help"])
-@bot.message_handler(
-    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("help"))
+@bot.message_handler(func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("help"))
 def help(msg):
     lc = msg.from_user.language_code
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("ref"))
@@ -121,8 +116,7 @@ def help(msg):
     return
 
 
-@bot.message_handler(
-    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("notifyoff"))
+@bot.message_handler(func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("notifyoff"))
 def notifyoff(msg):
     lc = msg.from_user.language_code
     markup = gen_markup(messages.get(get_lang(lc)).get("add"),
@@ -133,8 +127,7 @@ def notifyoff(msg):
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("noff"), reply_markup=markup)
 
 
-@bot.message_handler(
-    func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("notifyon"))
+@bot.message_handler(func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("notifyon"))
 def notifyon(msg):
     lc = msg.from_user.language_code
     markup = gen_markup(messages.get(get_lang(lc)).get("add"),
