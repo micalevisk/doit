@@ -30,7 +30,12 @@ messages = {
         "notify": "У вас есть невыполненные задачи 😥",
         "update": "Вышло обновления бота! Пожалуйста перезапустите его командой /start, для корректной работы!",
 
-        "message": "Сообщение"
+        "message": "Сообщение",
+        "notifyoff": "Отключить уведомления 🔕",
+        "noff": "Уведомления отключены 🔕",
+
+        "notifyon": "Включить уведомления 🔔",
+        "non": "Уведомления включены 🔔"
     },
     "en": {
         "newuser": "Welcome!\nPress button 'Add task ✏️', to create new task 📋",
@@ -62,6 +67,11 @@ messages = {
         "notify": "You have a outstanding tasks 😥",
         "update": "Came out update the bot! Please restart it with the command /start, for correct work!",
 
-        "message": "Message"
+        "message": "Message",
+        "notifyoff": "Off notifications 🔕",
+        "noff": "Notifications are disabled 🔕",
+
+        "notifyon": "On notifications 🔔",
+        "non": "Notifications are enabled 🔔"
     }
 }
