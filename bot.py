@@ -36,6 +36,11 @@ def start(msg):
                         messages.get(get_lang(lc)).get("mytask"), messages.get(get_lang(lc)).get("help"),
                         messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyoff"))
     if find:
+        if find["notify"] != "true":
+            markup = gen_markup(messages.get(get_lang(lc)).get("add"),
+                                messages.get(get_lang(lc)).get("mytask"), messages.get(get_lang(lc)).get("help"),
+                                messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyon"))
+
         bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("welcome"),
                          reply_markup=markup)
         botan.track(botan_key, msg.chat.id, msg, 'Returned user')
