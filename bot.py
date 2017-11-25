@@ -125,6 +125,8 @@ def help(msg):
 def lang(msg):
     lc = msg.from_user.language_code
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("lang") + lc)
+    botan.track(botan_key, msg.chat.id, msg, 'Lang')
+    return
 
 
 @bot.message_handler(func=lambda msg: msg.text == messages.get(get_lang(msg.from_user.language_code)).get("notifyoff"))
