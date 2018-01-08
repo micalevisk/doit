@@ -36,6 +36,7 @@ messages = {
         "notifyon": "Включить уведомления 🔔",
         "non": "Уведомления включены 🔔",
 
+        "cancelbtn": "Нажмите \"← назад\" или /cancel для отмены",
         "cancel": "Действие отменено ❌",
         "message": "Ура! Теперь появилась возможность включать/отключать уведомления 🎉"
     },
@@ -56,7 +57,7 @@ messages = {
         "nf": "Task not found❗️",
         "notask": "You have no tasks❗️",
         "back": "← back",
-        "menu": "Select menu 🌚",
+        "menu": "Select menu item🌚",
 
         "rate": "Rate⭐️",
         "textrate": "Thanks for using ToDo 🚀\nPlease rate it in the StoreBot",
@@ -75,6 +76,7 @@ messages = {
         "notifyon": "On notifications 🔔",
         "non": "Notifications are enabled 🔔",
 
+        "cancelbtn": "Click \"← back\" or /cancel to cancel",
         "cancel": "Action canceled ❌",
         "message": "Yay! It is now possible to enable/disable notifications 🎉"
     }
