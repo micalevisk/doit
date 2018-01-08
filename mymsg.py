@@ -36,6 +36,7 @@ messages = {
         "notifyon": "Включить уведомления 🔔",
         "non": "Уведомления включены 🔔",
 
+        "cancel": "Действие отменено ❌",
         "message": "Ура! Теперь появилась возможность включать/отключать уведомления 🎉"
     },
     "en": {
@@ -74,6 +75,7 @@ messages = {
         "notifyon": "On notifications 🔔",
         "non": "Notifications are enabled 🔔",
 
+        "cancel": "Action canceled ❌",
         "message": "Yay! It is now possible to enable/disable notifications 🎉"
     }
 }
