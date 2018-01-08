@@ -2,14 +2,16 @@
         <img src=".github/logo.png"/>
 </p>
 
-[![Add](https://img.shields.io/badge/Add%20to-Telegram-00afee.svg?style=flat-square)](https://t.me/ne_robot)
+[![Add](https://img.shields.io/badge/Add%20to-Telegram-00afee.svg?style=flat-square)](https://t.me/ymtaskbot)
 ![language](https://img.shields.io/badge/language-Python-brightgreen.svg?style=flat-square)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/enotcode/todobot.svg?style=flat-square)](https://scrutinizer-ci.com/g/enotcode/todobot/?branch=master)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/enotcode/todobot/blob/master/LICENSE)
 
-# ToDo 🚀
+# Do It 🚀
 
-[ToDo 🚀](https://t.me/ne_robot) — is a simple tool to manage daily tasks
+[Do It 🚀](https://t.me/ymtaskbot) — is a simple tool to manage daily tasks
+
+Bot based on a [pyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI).
 
 # Where to go for help?
 
@@ -19,13 +21,13 @@ Thanks for using the bot ❤️
 
 # Want to contribute?
 
-[ToDo 🚀](https://t.me/ne_robot) — is a non-profit project.
+[Do It 🚀](https://t.me/ymtaskbot) — is a open-source project.
 
 If you want to help the project, please do so fixing [issues](https://github.com/enotcode/todobot/issues) from the list and creating a pull request.
 
 Please use [PEP8](https://www.python.org/dev/peps/pep-0008/) Style Guide as the main tool to follow our project-wide code style.
 
-You can also evaluate bot in [StoreBot](https://t.me/storebot?start=ne_robot).
+You can also evaluate bot in [StoreBot](https://t.me/storebot?start=ymtaskbot).
 
 # Installation
 
