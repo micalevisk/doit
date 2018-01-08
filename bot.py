@@ -69,6 +69,7 @@ def add_task(msg):
     isWrite = True
     lc = msg.from_user.language_code
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("wtask"), reply_markup=kb_hider)
+    bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("cancelbtn"), reply_markup=kb_hider)
 
 
 @bot.message_handler(commands=["tasks"])
@@ -160,7 +161,10 @@ def msg_hand(msg):
     global isWrite
     if isWrite and msg.text[0]!="/":
         save_task(msg, msg.chat.id, msg.text)
-
+    else:
+        isWrite = False
+        bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("cancel"))
+        back(msg)
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
@@ -202,21 +206,6 @@ def save_task(msg, cid, text):
     else:
         bot.send_message(cid, messages.get(get_lang(lc)).get("maxlen"), reply_markup=markup)
     isWrite = False
-
-
-@bot.message_handler(commands=["cancel"])
-def cancel(msg):
-    global isWrite
-    lc = msg.from_user.language_code
-    find = db.users.find_one({"id": str(msg.chat.id)})
-    if find["notify"] != "true":
-        markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
-                            messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyon"))
-    else:
-        markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
-                            messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyoff"))
-    isWrite = False
-    bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("cancel"), reply_markup=markup)
 
 
 @bot.message_handler(commands=["admin"])
