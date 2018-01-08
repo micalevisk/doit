@@ -30,18 +30,18 @@ kb_hider = types.ReplyKeyboardRemove()
 @bot.message_handler(commands=["start"])
 def start(msg):
     find = db.users.find_one({"id": str(msg.chat.id)})
-    if find and !find["notify"]:
-        markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "On notifications 🔔")
-    else:
-        bot.send_message(msg.chat.id, "Welcome back 🎉"),
-                         reply_markup=markup)
+    if find:
+        if find["notify"]:
+            markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "Off notifications 🔕")
+        else:
+            markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "On notifications 🔔")
+        bot.send_message(msg.chat.id, "Welcome back 🎉", reply_markup=markup)
         botan.track(botan_key, msg.chat.id, msg, 'Returned user')
         return
     else:
         markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "Off notifications 🔕")
-        db.users.save({"id": str(msg.chat.id), "tasks": [], "lang": lc, "rate": "false", "notify": True})
-        bot.send_message(msg.chat.id, "Welcome!\nPress button 'Add task ✏️', to create new task 📋",
-                         reply_markup=markup)
+        db.users.save({"id": str(msg.chat.id), "tasks": [], "notify": True})
+        bot.send_message(msg.chat.id, "Welcome!\nPress button 'Add task ✏️', to create new task 📋",reply_markup=markup)
         botan.track(botan_key, msg.chat.id, msg, 'New user')
         return
 
@@ -63,8 +63,7 @@ def add_task(msg):
     global isWrite
     isWrite = True
     lc = msg.from_user.language_code
-    bot.send_message(msg.chat.id, "Click \"← back\" or /cancel to cancel")
-    bot.send_message(msg.chat.id, "Enter your task:", reply_markup=kb_hider)
+    bot.send_message(msg.chat.id, "Click \"← back\" to cancel\n\nEnter your task:", reply_markup=kb_hider)
 
 
 @bot.message_handler(commands=["tasks"])
@@ -88,10 +87,11 @@ def back(msg):
     global isWrite
     isWrite = False
     find = db.users.find_one({"id": str(msg.chat.id)})
-    if !find["notify"]:
-        markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "On notifications 🔔")
-    else:
+    if find["notify"]:
         markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "Off notifications 🔕")
+    else:
+        markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "On notifications 🔔")
+
     bot.send_message(msg.chat.id, "Select menu item 🌚", reply_markup=markup)
 
 
@@ -100,7 +100,7 @@ def back(msg):
 def rate(msg):
     kb = types.InlineKeyboardMarkup()
     btn = types.InlineKeyboardButton(
-        text="Thanks for using ToDo 🚀\nPlease rate it in the StoreBot", url="https://t.me/storebot?start=ne_robot")
+        text="Rate⭐️", url="https://t.me/storebot?start=ne_robot")
     kb.add(btn)
     bot.send_message(msg.chat.id, "Thanks for using ToDo 🚀\nPlease rate it in the StoreBot", reply_markup=kb)
     botan.track(botan_key, msg.chat.id, msg, 'Rate')
@@ -110,7 +110,6 @@ def rate(msg):
 @bot.message_handler(commands=["help"])
 @bot.message_handler(func=lambda msg: msg.text == "Help📚")
 def help(msg):
-    lc = msg.from_user.language_code
     bot.send_message(msg.chat.id, "If you have any questions or suggestions, please contact me @enotcode\n\nToDo 🚀 — is a open-source project\nhttps://github.com/enotcode/todobot")
     botan.track(botan_key, msg.chat.id, msg, 'Help')
     return
@@ -118,12 +117,13 @@ def help(msg):
 
 @bot.message_handler(func=lambda msg: msg.text == "Off notifications 🔕" or msg.text == "On notifications 🔔")
 def notifyset(msg):
+    find = db.users.find_one({"id": str(msg.chat.id)})
     if find["notify"]:
-        markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "Off notifications 🔕")
+        markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "On notifications 🔔")
         db.users.update({"id": str(msg.chat.id)}, {"$set": {"notify": False}})
         bot.send_message(msg.chat.id, "Notifications are disabled 🔕", reply_markup=markup)
     else:
-        markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "On notifications 🔔")
+        markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "Off notifications 🔕")
         db.users.update({"id": str(msg.chat.id)}, {"$set": {"notify": True}})
         bot.send_message(msg.chat.id, "Notifications are enabled 🔔", reply_markup=markup)
 
@@ -154,10 +154,10 @@ def callback_inline(call):
 def save_task(msg, cid, text):
     global isWrite
     find = db.users.find_one({"id": str(cid)})
-    if !find["notify"]:
-        markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "On notifications 🔔")
-    else:
+    if find["notify"]:
         markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "Off notifications 🔕")
+    else:
+        markup = gen_markup("Add task✏️", "My tasks📝", "Help📚", "Rate⭐️", "On notifications 🔔")
 
     if len(text) < 50:
         if text not in find["tasks"]:
