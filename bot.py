@@ -35,12 +35,10 @@ def start(msg):
     markup = gen_markup(messages.get(get_lang(lc)).get("add"),
                         messages.get(get_lang(lc)).get("mytask"), messages.get(get_lang(lc)).get("help"),
                         messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyoff"))
-    if find:
-        if find["notify"] != "true":
-            markup = gen_markup(messages.get(get_lang(lc)).get("add"),
-                                messages.get(get_lang(lc)).get("mytask"), messages.get(get_lang(lc)).get("help"),
-                                messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyon"))
-
+    if find and find["notify"] != "true":
+        markup = gen_markup(messages.get(get_lang(lc)).get("add"),
+                            messages.get(get_lang(lc)).get("mytask"), messages.get(get_lang(lc)).get("help"),
+                            messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyon"))
         bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("welcome"),
                          reply_markup=markup)
         botan.track(botan_key, msg.chat.id, msg, 'Returned user')
@@ -94,8 +92,14 @@ def back(msg):
     global isWrite
     isWrite = False
     lc = msg.from_user.language_code
-    markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
-                        messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyoff"))
+    find = db.users.find_one({"id": str(msg.chat.id)})
+    if find["notify"] != "true":
+        markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
+                            messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyon"))
+    else:
+        markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
+                            messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyoff"))
+
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("menu"), reply_markup=markup)
 
 
@@ -180,9 +184,13 @@ def callback_inline(call):
 def save_task(msg, cid, text):
     global isWrite
     lc = msg.from_user.language_code
-    markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
-                        messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyoff"))
     find = db.users.find_one({"id": str(cid)})
+    if find["notify"] != "true":
+        markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
+                            messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyon"))
+    else:
+        markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
+                            messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyoff"))
     if len(text) < 50:
         if text not in find["tasks"]:
             db.users.update({"id": str(cid)}, {"$push": {"tasks": text}}, upsert=False)
@@ -200,6 +208,13 @@ def save_task(msg, cid, text):
 def cancel(msg):
     global isWrite
     lc = msg.from_user.language_code
+    find = db.users.find_one({"id": str(msg.chat.id)})
+    if find["notify"] != "true":
+        markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
+                            messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyon"))
+    else:
+        markup = gen_markup(messages.get(get_lang(lc)).get("add"), messages.get(get_lang(lc)).get("mytask"),
+                            messages.get(get_lang(lc)).get("help"), messages.get(get_lang(lc)).get("rate"), messages.get(get_lang(lc)).get("notifyoff"))
     isWrite = False
     bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("cancel"), reply_markup=markup)
 
