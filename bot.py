@@ -110,7 +110,7 @@ def rate(msg):
 @bot.message_handler(commands=["help"])
 @bot.message_handler(func=lambda msg: msg.text == "Help📚")
 def help(msg):
-    bot.send_message(msg.chat.id, "If you have any questions or suggestions, please contact me @enotcode\n\nToDo 🚀 — is a open-source project\nhttps://github.com/enotcode/todobot")
+    bot.send_message(msg.chat.id, "If you have any questions or suggestions, please contact me @enotcode\n\nToDo 🚀 — is a open-source project\nhttps://github.com/enotcode/doit")
     botan.track(botan_key, msg.chat.id, msg, 'Help')
     return
 
