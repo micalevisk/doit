@@ -100,7 +100,7 @@ def back(msg):
 def rate(msg):
     kb = types.InlineKeyboardMarkup()
     btn = types.InlineKeyboardButton(
-        text="Rate⭐️", url="https://t.me/storebot?start=ne_robot")
+        text="Rate⭐️", url="https://t.me/storebot?start=jditbot")
     kb.add(btn)
     bot.send_message(msg.chat.id, "Thanks for using ToDo 🚀\nPlease rate it in the StoreBot", reply_markup=kb)
     botan.track(botan_key, msg.chat.id, msg, 'Rate')
@@ -110,7 +110,7 @@ def rate(msg):
 @bot.message_handler(commands=["help"])
 @bot.message_handler(func=lambda msg: msg.text == "Help📚")
 def help(msg):
-    bot.send_message(msg.chat.id, "If you have any questions or suggestions, please contact me @enotcode\n\nToDo 🚀 — is a open-source project\nhttps://github.com/enotcode/doit")
+    bot.send_message(msg.chat.id, "If you have any questions or suggestions, please contact me @enotcode\n\nDo It 🚀 — is a open-source project\nhttps://github.com/enotcode/doit")
     botan.track(botan_key, msg.chat.id, msg, 'Help')
     return
 
