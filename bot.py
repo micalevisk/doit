@@ -196,6 +196,14 @@ def save_task(msg, cid, text):
     isWrite = False
 
 
+@bot.message_handler(commands=["cancel"])
+def cancel(msg):
+    global isWrite
+    lc = msg.from_user.language_code
+    isWrite = False
+    bot.send_message(msg.chat.id, messages.get(get_lang(lc)).get("cancel"), reply_markup=markup)
+
+
 @bot.message_handler(commands=["admin"])
 def admin(msg):
     if msg.chat.id == config.adminID:
