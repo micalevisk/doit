@@ -50,7 +50,6 @@ def start(msg):
 def add(msg):
     global isWrite
     isWrite = True
-    lc = msg.from_user.language_code
     m = msg.text.replace("/add", "")
     if m == "":
         bot.send_message(msg.chat.id, "Enter your task:", reply_markup=kb_hider)
@@ -62,8 +61,9 @@ def add(msg):
 def add_task(msg):
     global isWrite
     isWrite = True
-    lc = msg.from_user.language_code
-    bot.send_message(msg.chat.id, "Click \"← back\" to cancel\n\nEnter your task:", reply_markup=kb_hider)
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+    markup.add("Cancel ❌")
+    bot.send_message(msg.chat.id, "Click \"Cancel ❌\" to cancel\n\nEnter your task:", reply_markup=markup)
 
 
 @bot.message_handler(commands=["tasks"])
@@ -71,8 +71,6 @@ def add_task(msg):
 def my_task(msg):
     global isWrite
     isWrite = False
-
-    lc = msg.from_user.language_code
     find = db.users.find_one({"id": str(msg.chat.id)})
     if len(find["tasks"]) != 0:
         bot.send_message(msg.chat.id, "Press the task in the list in order to finish it 🌝", reply_markup=tasks_kb(find["tasks"]))
@@ -82,8 +80,8 @@ def my_task(msg):
     return
 
 
-@bot.message_handler(func=lambda msg: msg.text == "← back")
-def back(msg):
+@bot.message_handler(func=lambda msg: msg.text == "Cancel ❌")
+def cancel(msg):
     global isWrite
     isWrite = False
     find = db.users.find_one({"id": str(msg.chat.id)})

@@ -33,7 +33,7 @@ You can also evaluate bot in [StoreBot](https://t.me/storebot?start=jditbot).
 
 ```sh
 git clone https://github.com/enotcode/doit.git
-cd todobot
+cd doit
 pip install -r requirements.txt
 ```
 
