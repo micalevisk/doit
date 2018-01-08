@@ -154,7 +154,7 @@ def notifyon(msg):
 @bot.message_handler(func=lambda msg: True)
 def msg_hand(msg):
     global isWrite
-    if isWrite:
+    if isWrite and msg.text!="/cancel"):
         save_task(msg, msg.chat.id, msg.text)
 
 
