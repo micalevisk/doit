@@ -2,4 +2,4 @@ pyTelegramBotAPI==3.0.0
 flask
 pymongo
 apscheduler==2.1.2
-i18n
+python-i18n
