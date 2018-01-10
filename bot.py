@@ -99,8 +99,23 @@ def my_task(msg):
     return
 
 
+@bot.message_handler(func=lambda msg: msg.text in btns.cancel)
+def cancel(msg):
+    global isWrite
+    isWrite = False
+    find = db.users.find_one({"id": str(msg.chat.id)})
+    i18n.set("locale", find["lang"])
+
+    if find["notify"]:
+        markup = gen_markup(i18n.t("msg.add"), i18n.t("msg.tasks"), i18n.t("msg.help"), i18n.t("msg.rate"), i18n.t("msg.offn"), i18n.t("msg.setl"))
+    else:
+        markup = gen_markup(i18n.t("msg.add"), i18n.t("msg.tasks"), i18n.t("msg.help"), i18n.t("msg.rate"), i18n.t("msg.onn"), i18n.t("msg.setl"))
+
+    bot.send_message(msg.chat.id, i18n.t("msg.menu"), reply_markup=markup)
+
+
 @bot.message_handler(commands=["rate"])
-@bot.message_handler(func=lambda msg: msg.text in rate)
+@bot.message_handler(func=lambda msg: msg.text in btns.rate)
 def rate(msg):
     find = db.users.find_one({"id": str(msg.chat.id)})
     i18n.set("locale", find["lang"])
@@ -115,7 +130,7 @@ def rate(msg):
 
 
 @bot.message_handler(commands=["help"])
-@bot.message_handler(func=lambda msg: msg.text in help)
+@bot.message_handler(func=lambda msg: msg.text in btns.help)
 def help(msg):
     find = db.users.find_one({"id": str(msg.chat.id)})
     i18n.set("locale", find["lang"])
@@ -148,6 +163,19 @@ def notifyset(msg):
         bot.send_message(msg.chat.id, i18n.t("msg.enabled"), reply_markup=markup)
 
 
+@bot.message_handler(func=lambda msg: True)
+def msg_hand(msg):
+    global isWrite
+    if isWrite and msg.text not in langs:
+        save_task(msg, msg.chat.id, msg.text)
+    elif msg.text in langs:
+        find = db.users.find_one({"id": str(msg.chat.id)})
+        db.users.update({"id": str(msg.chat.id)}, {"$set": {"lang": langs.get(msg.text)}})
+        i18n.set("locale", langs.get(msg.text))
+        bot.send_message(msg.chat.id, i18n.t("msg.newlang"))
+    isWrite = False
+
+
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
     find = db.users.find_one({"id": str(call.message.chat.id)})
@@ -164,33 +192,6 @@ def callback_inline(call):
         return
     else:
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=i18n.t("msg.notask"))
-
-
-@bot.message_handler(func=lambda msg: msg.text in btns.cancel)
-def cancel(msg):
-    global isWrite
-    isWrite = False
-    find = db.users.find_one({"id": str(msg.chat.id)})
-    i18n.set("locale", find["lang"])
-
-    if find["notify"]:
-        markup = gen_markup(i18n.t("msg.add"), i18n.t("msg.tasks"), i18n.t("msg.help"), i18n.t("msg.rate"), i18n.t("msg.offn"), i18n.t("msg.setl"))
-    else:
-        markup = gen_markup(i18n.t("msg.add"), i18n.t("msg.tasks"), i18n.t("msg.help"), i18n.t("msg.rate"), i18n.t("msg.onn"), i18n.t("msg.setl"))
-
-    bot.send_message(msg.chat.id, i18n.t("msg.menu"), reply_markup=markup)
-
-
-@bot.message_handler(func=lambda msg: True)
-def msg_hand(msg):
-    global isWrite
-    if isWrite and msg.text not in langs:
-        save_task(msg, msg.chat.id, msg.text)
-    elif msg.text in langs:
-        find = db.users.find_one({"id": str(msg.chat.id)})
-        db.users.update({"id": str(msg.chat.id)}, {"$set": {"lang": langs.get(msg.text)}})
-        i18n.set("locale", langs.get(msg.text))
-        bot.send_message(msg.chat.id, i18n.t("msg.newlang"))
 
 
 def save_task(msg, cid, text):
