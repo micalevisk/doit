@@ -34,6 +34,7 @@ lang_markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=
 [b.append(l) for l in langs.keys()]
 lang_markup.row(b[0], b[1])
 
+
 @bot.message_handler(commands=["start"])
 def start(msg):
     find = db.users.find_one({"id": str(msg.chat.id)})
@@ -80,18 +81,6 @@ def add_task(msg):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     markup.add(i18n.t("msg.cancel"))
     bot.send_message(msg.chat.id, i18n.t("msg.enter"), reply_markup=markup)
-
-
-@bot.message_handler(func=lambda msg: True)
-def msg_hand(msg):
-    global isWrite
-    if isWrite and msg.text not in langs:
-        save_task(msg, msg.chat.id, msg.text)
-    elif msg.text in langs:
-        find = db.users.find_one({"id": str(msg.chat.id)})
-        db.users.update({"id": str(msg.chat.id)}, {"$set": {"lang": langs.get(msg.text)}})
-        i18n.set("locale", langs.get(msg.text))
-        bot.send_message(msg.chat.id, i18n.t("msg.newlang"))
 
 
 @bot.message_handler(commands=["tasks"])
@@ -190,6 +179,18 @@ def cancel(msg):
         markup = gen_markup(i18n.t("msg.add"), i18n.t("msg.tasks"), i18n.t("msg.help"), i18n.t("msg.rate"), i18n.t("msg.onn"), i18n.t("msg.setl"))
 
     bot.send_message(msg.chat.id, i18n.t("msg.menu"), reply_markup=markup)
+
+
+@bot.message_handler(func=lambda msg: True)
+def msg_hand(msg):
+    global isWrite
+    if isWrite and msg.text not in langs:
+        save_task(msg, msg.chat.id, msg.text)
+    elif msg.text in langs:
+        find = db.users.find_one({"id": str(msg.chat.id)})
+        db.users.update({"id": str(msg.chat.id)}, {"$set": {"lang": langs.get(msg.text)}})
+        i18n.set("locale", langs.get(msg.text))
+        bot.send_message(msg.chat.id, i18n.t("msg.newlang"))
 
 
 def save_task(msg, cid, text):
