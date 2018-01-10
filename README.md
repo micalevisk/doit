@@ -3,13 +3,14 @@
 </p>
 
 [![Add](https://img.shields.io/badge/Add%20to-Telegram-00afee.svg?style=flat-square)](https://t.me/jditbot)
+[![BuildStatus](https://img.shields.io/scrutinizer/build/g/enotcode/doit.svg?style=flat-square)](https://scrutinizer-ci.com/g/enotcode/doit/build-status/master)
+[![ScrutinizerCodeQuality](https://img.shields.io/scrutinizer/g/enotcode/doit.svg?style=flat-square)](https://scrutinizer-ci.com/g/enotcode/doit/?branch=master)
 ![language](https://img.shields.io/badge/language-Python-brightgreen.svg?style=flat-square)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/enotcode/todobot.svg?style=flat-square)](https://scrutinizer-ci.com/g/enotcode/doit/?branch=master)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/enotcode/doit/blob/master/LICENSE)
 
-# Do It 🚀
+# Just Do It 🚀
 
-[Do It 🚀](https://t.me/jditbot) — is a simple tool to manage daily tasks
+[Just Do It 🚀](https://t.me/jditbot) — is a simple tool to manage daily tasks
 
 Bot based on a [pyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI).
 
@@ -21,7 +22,7 @@ Thanks for using the bot ❤️
 
 # Want to contribute?
 
-[Do It 🚀](https://t.me/jditbot) — is a open-source project.
+[Just Do It 🚀](https://t.me/jditbot) — is a open-source project.
 
 If you want to help the project, please do so fixing [issues](https://github.com/enotcode/doit/issues) from the list and creating a pull request.
 
