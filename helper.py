@@ -1,10 +1,11 @@
 from telebot import types
 
-def gen_markup(add_task, my_task, my_help, rate, notify):
+
+def gen_markup(add_task, my_task, my_help, rate, notify, setlang):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row(add_task, my_task)
     markup.row(my_help, rate)
-    markup.row(notify)
+    markup.row(notify, setlang)
     return markup
 
 
