@@ -85,7 +85,7 @@ def add_task(msg):
 @bot.message_handler(func=lambda msg: True)
 def msg_hand(msg):
     global isWrite
-    if isWrite and msg.text not in lang:
+    if isWrite and msg.text not in langs:
         save_task(msg, msg.chat.id, msg.text)
     elif msg.text in langs:
         find = db.users.find_one({"id": str(msg.chat.id)})
