@@ -1,6 +1,4 @@
 .idea
 *.pyc
-config0.py
 db_helper.py
 encoder.py
-testbot.py
